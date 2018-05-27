@@ -1,0 +1,61 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "destoryAnim",
+  "_objFlags": 0,
+  "_rawFiles": null,
+  "_duration": 0.44,
+  "sample": 25,
+  "speed": 1,
+  "wrapMode": 0,
+  "curveData": {
+    "comps": {
+      "cc.Sprite": {
+        "spriteFrame": [
+          {
+            "frame": 0,
+            "value": {
+              "__uuid__": "2824e3f1-4a3e-4526-a97f-860ebb940549"
+            }
+          },
+          {
+            "frame": 0.08,
+            "value": {
+              "__uuid__": "acf6d67d-80cd-4ae9-9563-0181fe2678f7"
+            }
+          },
+          {
+            "frame": 0.16,
+            "value": {
+              "__uuid__": "019000b9-11d9-4ebc-b231-bd3cfe813423"
+            }
+          },
+          {
+            "frame": 0.24,
+            "value": {
+              "__uuid__": "eba719a7-29a9-4a20-8c08-4a05ac83cf39"
+            }
+          },
+          {
+            "frame": 0.32,
+            "value": {
+              "__uuid__": "58956604-27a2-4839-88c0-2f9eecf1eb2f"
+            }
+          },
+          {
+            "frame": 0.4,
+            "value": {
+              "__uuid__": "1c18280f-3d3b-4530-aca3-722076f83d0a"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "events": [
+    {
+      "frame": 0.4,
+      "func": "animEnd",
+      "params": []
+    }
+  ]
+}

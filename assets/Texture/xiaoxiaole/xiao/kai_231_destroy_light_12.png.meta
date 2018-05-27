@@ -1,0 +1,30 @@
+{
+  "ver": "1.0.0",
+  "uuid": "a05638c0-f34c-4cb4-82b8-1b82c2f36340",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "subMetas": {
+    "kai_231_destroy_light_12": {
+      "ver": "1.0.3",
+      "uuid": "019000b9-11d9-4ebc-b231-bd3cfe813423",
+      "rawTextureUuid": "a05638c0-f34c-4cb4-82b8-1b82c2f36340",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 75,
+      "height": 75,
+      "rawWidth": 75,
+      "rawHeight": 75,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
