@@ -1,0 +1,311 @@
+Signature-Version: 1.0
+Created-By: 1.0 (Android)
+SHA1-Digest-Manifest: 707poTI+cm6LLRDt2CvDu+mzL0M=
+X-Android-APK-Signed: 2
+
+Name: AndroidManifest.xml
+SHA1-Digest: CK7ZgXl6h/BM3La0XOypGZdk90I=
+
+Name: assets/main.js
+SHA1-Digest: fpoCuXOSc51e0ytyelR4aJz3Ts4=
+
+Name: assets/project.json
+SHA1-Digest: mIVrWh7LoNdpnxvCAkajhwtD4u8=
+
+Name: assets/res/import/01/01c179e83.json
+SHA1-Digest: 495uuMhOScuFEoLLtJi5rSiOQ2Y=
+
+Name: assets/res/import/01/01fcd80b1.json
+SHA1-Digest: ACIlkmzxDOWq4zS6rI5wq0GiApA=
+
+Name: assets/res/import/02/02b7f3342.json
+SHA1-Digest: GWXhNMK1FzfbmCvWQuDTopbZ/AQ=
+
+Name: assets/res/import/05/05c3bd746.json
+SHA1-Digest: +7WDvOolQuMFyRHrf0kIl5Uyth8=
+
+Name: assets/res/import/05/05c49256a.json
+SHA1-Digest: d1NTWdPPwHr8keZj/3IylpglH5U=
+
+Name: assets/res/import/06/0644f7b17.json
+SHA1-Digest: PrU/CvyfoXS4YoVMEUWtU6Geh9M=
+
+Name: assets/res/import/06/06c27742f.json
+SHA1-Digest: 4wVoQERRU8/o6+o+GD1gdC1Ek58=
+
+Name: assets/res/import/06/06fe8328e.json
+SHA1-Digest: gKfk4FfIjyxfFAYS3UqhvTHr+F0=
+
+Name: assets/res/import/07/07b4fc056.json
+SHA1-Digest: nSPkXq0cZFyMwlttuP5niCurgeQ=
+
+Name: assets/res/import/07/07eb6b825.json
+SHA1-Digest: IEZyXcE10MBBNILFC+vadLMxKJY=
+
+Name: assets/res/import/08/081b292f1.json
+SHA1-Digest: zDaa3337i42pgqQEPTmnnDvxI90=
+
+Name: assets/res/import/08/0884b92f.json
+SHA1-Digest: FbHNZckdOpXX++J7z3yuvfC+V3M=
+
+Name: assets/res/import/09/0943175a2.json
+SHA1-Digest: cPk3+4fp6r/RQvgrf/YhiqS+d8o=
+
+Name: assets/res/import/0a/0a42ef858.json
+SHA1-Digest: YZwyrr0mGqLHON7dQRid8HXG2zQ=
+
+Name: assets/res/import/0a/0aa7fd111.json
+SHA1-Digest: UxhQbg13hudzKtJOMNGcZehmW+o=
+
+Name: assets/res/import/0b/0b12775d0.json
+SHA1-Digest: zf8oIIchXaAnJwXuThDJ8H9xv14=
+
+Name: assets/res/import/0c/0c7fd23d0.json
+SHA1-Digest: kp69wPuMeK4P2pixzpfQolDqF/I=
+
+Name: assets/res/import/0d/0d7b56df6.json
+SHA1-Digest: Wt8cG8bhAyCrjQu+j7G2EauZoaY=
+
+Name: assets/res/import/0e/0ed441e4f.json
+SHA1-Digest: JahZYcMjjUOLikFNXP8b/bcXa9E=
+
+Name: assets/res/import/0f/0f552ff72.json
+SHA1-Digest: KrIMs8srH3e3298G8/uZ7UYkMHs=
+
+Name: assets/res/import/85/8578354a-470b-41cd-bbb5-26f8c59e9d4a.json
+SHA1-Digest: TaCUwoZRvIAEpFEfjSK8m10k9fI=
+
+Name: assets/res/raw-assets/Music/bgm1.mp3
+SHA1-Digest: /ooeg1/1R2gOj27k0BidMASOQ0g=
+
+Name: assets/res/raw-assets/Music/selected.mp3
+SHA1-Digest: 323QwIleVxy4UXCCBKjCBDFB9OE=
+
+Name: assets/res/raw-assets/Music/xiaocu.mp3
+SHA1-Digest: E5+KznUQfmRGW3JpdwUfmUGcTF4=
+
+Name: assets/res/raw-assets/Texture/xiaoxiaole/bg.png
+SHA1-Digest: HNoVak6SuIroz1SreXHDF7GKzpo=
+
+Name: assets/res/raw-assets/Texture/xiaoxiaole/bottom_image.png
+SHA1-Digest: ULM4Ie0kdkPNW9WNlJCnLgiWqGY=
+
+Name: assets/res/raw-assets/Texture/xiaoxiaole/devide.png
+SHA1-Digest: QQSLjG1ivFrPx9AwkKheABoE2ws=
+
+Name: assets/res/raw-assets/Texture/xiaoxiaole/game_begin.png
+SHA1-Digest: 2tOQbZJ0LJpO7AOU+eeVlJE3g1s=
+
+Name: assets/res/raw-assets/Texture/xiaoxiaole/game_name_image.png
+SHA1-Digest: NzzEzk/4Ve8+Go1QgS5VOtY8bNw=
+
+Name: assets/res/raw-assets/Texture/xiaoxiaole/node_bg.png
+SHA1-Digest: GDz4o/g+YVtVKI71pMmLb+0iiq8=
+
+Name: assets/res/raw-assets/Texture/xiaoxiaole/nodes/bear.png
+SHA1-Digest: axwnAgyIVXFG/iVxhdW3ALgMhmo=
+
+Name: assets/res/raw-assets/Texture/xiaoxiaole/nodes/cat.png
+SHA1-Digest: VGrAuU7sF1Ei9SuIoAPDpTjEzVk=
+
+Name: assets/res/raw-assets/Texture/xiaoxiaole/nodes/chicken.png
+SHA1-Digest: nM9sAqs9/nG4MANsUpBXALUSqfc=
+
+Name: assets/res/raw-assets/Texture/xiaoxiaole/nodes/fox.png
+SHA1-Digest: xJaae5MMSZUyTgx4SscykUt8jsM=
+
+Name: assets/res/raw-assets/Texture/xiaoxiaole/nodes/frog.png
+SHA1-Digest: IR+08oLW+JmkBHweFxwVsLa1EhE=
+
+Name: assets/res/raw-assets/Texture/xiaoxiaole/temps.png
+SHA1-Digest: LGC3MzZEDmXAbNVFvo5v2V6ACm0=
+
+Name: assets/res/raw-assets/Texture/xiaoxiaole/teng.png
+SHA1-Digest: MG2zdC8q1asRl1VvXQTgciOWXME=
+
+Name: assets/res/raw-assets/Texture/xiaoxiaole/tengzi.png
+SHA1-Digest: b8Ihrr9jo6An0vs1LtmJMRXet6E=
+
+Name: assets/res/raw-assets/Texture/xiaoxiaole/xiao/kai_231_destroy_li
+ ght_10.png
+SHA1-Digest: 4FTF59KK8sfhGEP4BcvL7+CHE40=
+
+Name: assets/res/raw-assets/Texture/xiaoxiaole/xiao/kai_231_destroy_li
+ ght_11.png
+SHA1-Digest: fjuziPa+9/dB5E6219sG6n7AWPc=
+
+Name: assets/res/raw-assets/Texture/xiaoxiaole/xiao/kai_231_destroy_li
+ ght_12.png
+SHA1-Digest: 8p0a+S4c6r/Xb+VRyCZODT99X34=
+
+Name: assets/res/raw-assets/Texture/xiaoxiaole/xiao/kai_231_destroy_li
+ ght_13.png
+SHA1-Digest: 0E1pNQ7GC/VKnDezI1v1QT99qkA=
+
+Name: assets/res/raw-assets/Texture/xiaoxiaole/xiao/kai_231_destroy_li
+ ght_14.png
+SHA1-Digest: BXdG482kUVmc3kpA2NswFJAdq0A=
+
+Name: assets/res/raw-assets/Texture/xiaoxiaole/xiao/kai_231_destroy_li
+ ght_15.png
+SHA1-Digest: wU1AEDpRg8gdmxh9CADY0jDeWHU=
+
+Name: assets/script/ccui/jsb_ccui_create_apis.js
+SHA1-Digest: +4j2FN1c1GjibKMKJ9hsLmoD+1E=
+
+Name: assets/script/ccui/jsb_ccui_deprecated.js
+SHA1-Digest: 0oGZqupvznmpoCDLosaamFkvJ4c=
+
+Name: assets/script/ccui/jsb_ccui_property_apis.js
+SHA1-Digest: VUgfkcPaVn49Rn6JObMnEqmKy5M=
+
+Name: assets/script/ccui/jsb_ccui_property_impls.js
+SHA1-Digest: Pj/WU2wrgkhGCDZ/8MKsjKM22/g=
+
+Name: assets/script/ccui/jsb_cocos2d_ui.js
+SHA1-Digest: opMkz0XIVZC/6AvB5forNdgIyDg=
+
+Name: assets/script/debugger/DevToolsUtils.js
+SHA1-Digest: apZFZ0bHrPjY6SUPYlm4XQPNOKs=
+
+Name: assets/script/debugger/README.md
+SHA1-Digest: LRfuNO1Wezs9v3/4H7uMnvTPxF8=
+
+Name: assets/script/debugger/actors/breakpoint.js
+SHA1-Digest: ltONTISBGKyvhcITpbbgZnFm7n4=
+
+Name: assets/script/debugger/actors/common.js
+SHA1-Digest: s0PQahgy+ZTis9KEh2MUFgJ5eK8=
+
+Name: assets/script/debugger/actors/environment.js
+SHA1-Digest: A6E00ErZ/h0fNp+bq3jRQnrAKBs=
+
+Name: assets/script/debugger/actors/frame.js
+SHA1-Digest: vceX8VcTGQzu7puh3yDoRjn5v9U=
+
+Name: assets/script/debugger/actors/object.js
+SHA1-Digest: YVzEvsQopwv7qOt+uTZUS6wnaXk=
+
+Name: assets/script/debugger/actors/root.js
+SHA1-Digest: kO4GjXM4Z+/cnsimzBFqcil9Qpk=
+
+Name: assets/script/debugger/actors/script.js
+SHA1-Digest: uGKj/pEm/qbabjpls0hwEGG0gfM=
+
+Name: assets/script/debugger/actors/source.js
+SHA1-Digest: fBSw8LNxz1tEOxASSjxWnAp2/7w=
+
+Name: assets/script/debugger/actors/utils/ScriptStore.js
+SHA1-Digest: pG1lBSFqXtxGxELSXtJCJpB8fH0=
+
+Name: assets/script/debugger/actors/utils/TabSources.js
+SHA1-Digest: 7ZRkOw5Jh9+6BDUmKJ7ar0LLyH4=
+
+Name: assets/script/debugger/actors/webconsole.js
+SHA1-Digest: UXlgLY3/U/XBoibuyYhlhNaOKUQ=
+
+Name: assets/script/debugger/event-emitter.js
+SHA1-Digest: 6P8Rnwv1l5d3h5La0LW81dh5/SA=
+
+Name: assets/script/debugger/main.js
+SHA1-Digest: EqOQRo9GV9fdpXb+9glQGEvL3NY=
+
+Name: assets/script/debugger/protocol.js
+SHA1-Digest: cF0iqwaP4KZbPudkY7p1AzO+Ti0=
+
+Name: assets/script/debugger/sdk/event-core.js
+SHA1-Digest: b6rA4vJuqVGEVUBROjqLdYEJAp0=
+
+Name: assets/script/debugger/sdk/heritage.js
+SHA1-Digest: w1QhhrYx0G8TzroMhgHC9hP6MPA=
+
+Name: assets/script/debugger/sdk/object.js
+SHA1-Digest: jFB21PPvZmCKhzkYGK/6tfgnuhE=
+
+Name: assets/script/debugger/sdk/target.js
+SHA1-Digest: SvY8tntCXKnB7V+8Y54rrazknog=
+
+Name: assets/script/debugger/transport.js
+SHA1-Digest: m9uZQ8pVjcFFwOxDZtAHkDbVjAk=
+
+Name: assets/script/debugger/webconsole/utils.js
+SHA1-Digest: bQh/VEdCeI0RaxXwKdihLr6UkrU=
+
+Name: assets/script/extension/jsb_cocos2d_extension.js
+SHA1-Digest: oxqcMMeKOL6ZJdwkGdG7hD2H2Nc=
+
+Name: assets/script/jsb.js
+SHA1-Digest: z3nFAKRWTgr3IRG1y1LlgvYvN30=
+
+Name: assets/script/jsb_audioengine.js
+SHA1-Digest: XABM1aJxnArVsWpsZsF4919V7uA=
+
+Name: assets/script/jsb_boot.js
+SHA1-Digest: rg/ofY7F0mvKipVvQLsQc4yfdRg=
+
+Name: assets/script/jsb_cocos2d.js
+SHA1-Digest: YdAXpx/aSez1+xhKiRVPn34Ef+s=
+
+Name: assets/script/jsb_cocosanalytics.js
+SHA1-Digest: kttkCZac696Vk+MWIxQOTg9hkPM=
+
+Name: assets/script/jsb_common.js
+SHA1-Digest: OJdRTrMa+Nvkq1ZDdy8lDXA6fKc=
+
+Name: assets/script/jsb_create_apis.js
+SHA1-Digest: cLQ7Mfr0OCfjQW7f9ruaVftuijE=
+
+Name: assets/script/jsb_debugger.js
+SHA1-Digest: wUX/so6leJnwLsbzRDETw3rqNv0=
+
+Name: assets/script/jsb_dragonbones.js
+SHA1-Digest: DvqACoC0SNemPaliMGZaDqJxw0E=
+
+Name: assets/script/jsb_opengl.js
+SHA1-Digest: tgEuldHeMOtJpugRHNFrRQCnSLQ=
+
+Name: assets/script/jsb_opengl_constants.js
+SHA1-Digest: 9R692s3MfuKQvNNDRayyjGIFLM0=
+
+Name: assets/script/jsb_prepare.js
+SHA1-Digest: AehRPAl1BRMP+6qaBgIEovzcGCw=
+
+Name: assets/script/jsb_property_apis.js
+SHA1-Digest: r0I6O4RKv1k/EktwPRjuCSy4kIk=
+
+Name: assets/script/jsb_property_impls.js
+SHA1-Digest: 7Y/sgwyANRZYBA45q3KqUt0Sw1A=
+
+Name: assets/script/jsb_spine.js
+SHA1-Digest: oKIrCE/7n/ecMIBnbV/6E4BZXwY=
+
+Name: assets/src/jsb_polyfill.jsc
+SHA1-Digest: 9zaHb2LNBymsBBdwoa+m9gxX150=
+
+Name: assets/src/project.jsc
+SHA1-Digest: FFoFQf3ya2PfhZdEtE4Yixf/NPI=
+
+Name: assets/src/settings.jsc
+SHA1-Digest: BjqfrYRQr6o2UGOFH2Yc4+oiv1o=
+
+Name: classes.dex
+SHA1-Digest: qHIu4yaf/ue1Vqx5IcY57+qP748=
+
+Name: lib/armeabi-v7a/libcocos2djs.so
+SHA1-Digest: hi2cJvxXreZZIQXxnKE780ghKOM=
+
+Name: res/mipmap-hdpi-v4/ic_launcher.png
+SHA1-Digest: pu9cwtlv0LHjn66VLsvpH0Jh9zU=
+
+Name: res/mipmap-mdpi-v4/ic_launcher.png
+SHA1-Digest: /tcKqpWwJgHIf3bL9D5/bnCPTGw=
+
+Name: res/mipmap-xhdpi-v4/ic_launcher.png
+SHA1-Digest: h6Jf8MHDhn+HkS2R2sAHoQ0nWZI=
+
+Name: res/mipmap-xxhdpi-v4/ic_launcher.png
+SHA1-Digest: eD60J0k1lkOj4eW/RQnor0+02UI=
+
+Name: resources.arsc
+SHA1-Digest: H02KEPhiW6GTaA91auPIJBGU3TM=
+
