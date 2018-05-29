@@ -89,11 +89,110 @@ cc.Class({
         let rowCount = 9;
         let columCount = 9;
         let nodeIndex = 0;
-        let clickNode = new objBean();
+        // let clickNode = new objBean();
+        let clickNode = null;
         let playAnim = null;
         let desAnim1 = null;
         let desAnim2 = null;
         cc.audioEngine.play(that.bgm, true, 1);
+        // for (let i = 0; i < columCount + 2; ++i) {
+        //     let rowNode = [];
+        //     if (i > 0 && i < (columCount + 1)) {        //第一行和最后一行为空
+        //         for (let j = 0; j < rowCount + 2; ++j) {
+        //             if (j > 0 && j < (columCount + 1)) {        //第一列和最后一列置空
+        //                 let emptyNode = new objBean();
+        //                 let newNode = cc.instantiate(this.bgNode);
+        //                 nodeIndex = parseInt(Math.random() * (4 + 1), 10);
+        //                 let gameNewNode = cc.instantiate(this.gameObjs[nodeIndex]);
+
+
+
+        //                 let x = -71 * (rowCount / 2) + 71 * (j - 1) + 35.5;
+        //                 let y = -71 * (columCount / 2) + 71 * (i - 1) + 35.5;
+        //                 newNode.setPosition(x, y);
+        //                 gameNewNode.setPosition(x, y);
+        //                 emptyNode.pointIndexX = j;
+        //                 emptyNode.pointIndexY = i;
+        //                 this.node.addChild(newNode);
+        //                 this.node.addChild(gameNewNode);
+        //                 emptyNode.pointBgNode = newNode;
+        //                 emptyNode.pointNode = gameNewNode;
+        //                 emptyNode.pointValue = nodeIndex;
+        //                 gameNewNode.on(cc.Node.EventType.TOUCH_START, function (event) {
+        //                     // console.log(gameNewNode.getPosition().x)
+        //                     if (clickNode.pointValue !== -1
+        //                         && clickNode !== emptyNode) {
+        //                         console.log("第二次点击")
+        //                         let node_1_x = clickNode.pointNode.getPosition().x;
+        //                         let node_1_y = clickNode.pointNode.getPosition().y;
+        //                         let node_2_x = emptyNode.pointNode.getPosition().x;
+        //                         let node_2_y = emptyNode.pointNode.getPosition().y;
+        //                         console.log("gameNewNode.getTag() = " + emptyNode.pointValue + ",   clickNode.getTag() = " + clickNode.pointValue);
+        //                         if (that.matchBolck(that.gameNodes, emptyNode, clickNode)) {
+        //                             cc.audioEngine.play(that.xiaocuMusic, false, 1);
+        //                             clickNode.pointValue = -1;
+        //                             emptyNode.pointValue = -1;
+        //                             clickNode.pointNode.destroy();
+        //                             emptyNode.pointNode.destroy();
+
+        //                             let desclickNode = cc.instantiate(that.desAnim);
+        //                             let desnewNode = cc.instantiate(that.desAnim);
+        //                             desclickNode.setPosition(node_1_x, node_1_y);
+        //                             desnewNode.setPosition(node_2_x, node_2_y);
+        //                             that.node.addChild(desclickNode);
+        //                             that.node.addChild(desnewNode);
+        //                             that.gameNodes[clickNode.pointIndexX][clickNode.pointIndexY].pointValue = -1;
+        //                             that.gameNodes[emptyNode.pointIndexX][emptyNode.pointIndexY].pointValue = -1;
+        //                             console.log("设置归零 " + clickNode.pointIndexX + ' + ' + clickNode.pointIndexY + ' + ' + emptyNode.pointIndexX + ' + ' + emptyNode.pointIndexY);
+        //                             console.log('clickNode ' + that.gameNodes[clickNode.pointIndexX][clickNode.pointIndexY].pointValue);
+        //                             console.log('emptyNode ' + that.gameNodes[emptyNode.pointIndexX][emptyNode.pointIndexY].pointValue);
+
+        //                         } else {
+        //                             console.log('不符合条件，重新选取' + clickNode.pointValue);
+        //                             cc.audioEngine.play(that.selectedBgm, false, 1);
+        //                             if (playAnim) {
+        //                                 playAnim.stop();
+        //                             }
+        //                             playAnim = emptyNode.pointNode.getComponent(cc.Animation);
+        //                             playAnim.play('click');
+        //                             clickNode = emptyNode;
+        //                         }
+        //                         // console.log(node_1_x + " + " + node_1_y + " + " + node_2_x + " + " + node_2_y)
+        //                     } else {
+        //                         console.log('为空，重新选取' + (clickNode === null));
+        //                         cc.audioEngine.play(that.selectedBgm, false, 1);
+        //                         playAnim = emptyNode.pointNode.getComponent(cc.Animation);
+        //                         playAnim.play('click');
+        //                         clickNode = emptyNode;
+        //                     }
+        //                 }, emptyNode);
+        //                 // node.parent = scene;
+
+        //                 rowNode.push(emptyNode);
+        //             } else {
+        //                 let emptyNode = new objBean();
+        //                 console.log("节点 = " + emptyNode.pointX);
+        //                 emptyNode.pointIndexX = j;
+        //                 emptyNode.pointIndexY = i;
+        //                 rowNode.push(emptyNode);
+        //             }
+        //         }
+        //     } else {
+        //         for (let j = 0; j < rowCount + 2; ++j) {
+        //             let emptyNode = new objBean();
+        //             console.log("节点 = " + emptyNode.pointX);
+        //             emptyNode.pointIndexX = j;
+        //             emptyNode.pointIndexY = i;
+        //             rowNode.push(emptyNode);
+        //         }
+        //     }
+
+        //     this.gameNodes.push(rowNode);
+        // }
+
+
+
+
         for (let i = 0; i < columCount + 2; ++i) {
             let rowNode = [];
             if (i > 0 && i < (columCount + 1)) {        //第一行和最后一行为空
@@ -103,10 +202,6 @@ cc.Class({
                         let newNode = cc.instantiate(this.bgNode);
                         nodeIndex = parseInt(Math.random() * (4 + 1), 10);
                         let gameNewNode = cc.instantiate(this.gameObjs[nodeIndex]);
-                        emptyNode.pointBgNode = newNode;
-                        emptyNode.pointNode = gameNewNode;
-                        emptyNode.pointValue = nodeIndex;
-
 
                         let x = -71 * (rowCount / 2) + 71 * (j - 1) + 35.5;
                         let y = -71 * (columCount / 2) + 71 * (i - 1) + 35.5;
@@ -114,10 +209,11 @@ cc.Class({
                         gameNewNode.setPosition(x, y);
                         emptyNode.pointIndexX = j;
                         emptyNode.pointIndexY = i;
-
                         this.node.addChild(newNode);
                         this.node.addChild(gameNewNode);
-
+                        emptyNode.pointBgNode = newNode;
+                        emptyNode.pointNode = gameNewNode;
+                        emptyNode.pointValue = nodeIndex;
                         gameNewNode.on(cc.Node.EventType.TOUCH_START, function (event) {
                             // console.log(gameNewNode.getPosition().x)
                             if (clickNode.pointValue !== -1
@@ -144,13 +240,11 @@ cc.Class({
                                     that.gameNodes[clickNode.pointIndexX][clickNode.pointIndexY].pointValue = -1;
                                     that.gameNodes[emptyNode.pointIndexX][emptyNode.pointIndexY].pointValue = -1;
                                     console.log("设置归零 " + clickNode.pointIndexX + ' + ' + clickNode.pointIndexY + ' + ' + emptyNode.pointIndexX + ' + ' + emptyNode.pointIndexY);
-                                    for (let a = 0; a < columCount; ++a) {
-                                        for (let b = 0; b < rowCount; ++b) {
-                                            console.log('index ' + a + "--" + b + " = " + that.gameNodes[a][b].pointValue);
-                                        }
-                                    }
+                                    console.log('clickNode ' + that.gameNodes[clickNode.pointIndexX][clickNode.pointIndexY].pointValue);
+                                    console.log('emptyNode ' + that.gameNodes[emptyNode.pointIndexX][emptyNode.pointIndexY].pointValue);
 
                                 } else {
+                                    console.log('不符合条件，重新选取' + clickNode.pointValue);
                                     cc.audioEngine.play(that.selectedBgm, false, 1);
                                     if (playAnim) {
                                         playAnim.stop();
@@ -161,6 +255,7 @@ cc.Class({
                                 }
                                 // console.log(node_1_x + " + " + node_1_y + " + " + node_2_x + " + " + node_2_y)
                             } else {
+                                console.log('为空，重新选取' + (clickNode === null));
                                 cc.audioEngine.play(that.selectedBgm, false, 1);
                                 playAnim = emptyNode.pointNode.getComponent(cc.Animation);
                                 playAnim.play('click');
@@ -190,6 +285,10 @@ cc.Class({
 
             this.gameNodes.push(rowNode);
         }
+
+
+
+
         // for (let i = 0; i < columCount; ++i) {
         //     let rowNode = [];
         //     for (let j = 0; j < rowCount; ++j) {
