@@ -10,7 +10,12 @@
 
 cc.Class({
     extends: cc.Component,
-
+    ctor: function (x, y, positionX = 0, positionY = 0) {
+        this.pointIndexX = x;
+        this.pointIndexY = y;
+        this.pointX = positionX;
+        this.pointY = positionY;
+    },
     properties: {
         pointValue: -1,
         pointX: 0,

@@ -1,17 +1,15 @@
-// Learn cc.Class:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/class.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/class.html
-// Learn Attribute:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/reference/attributes.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/life-cycle-callbacks.html
+
 var objBean = require('NodeBean')
 cc.Class({
     extends: cc.Component,
 
     properties: {
+        ws: {
+            default: null,
+            type: WebSocket
+        },
+        rowCount: 8,
+        columCount: 8,
         xiaocuMusic: {
             default: null,
             url: cc.AudioClip
@@ -33,27 +31,6 @@ cc.Class({
             type: cc.Prefab
         },
         bgNodes: [],        //背景节点数组
-
-        // gameNode1:{
-        //     default:null,
-        //     type:cc.Prefab
-        // },
-        // gameNode2:{
-        //     default:null,
-        //     type:cc.Prefab
-        // },
-        // gameNode3:{
-        //     default:null,
-        //     type:cc.Prefab
-        // },
-        // gameNode4:{
-        //     default:null,
-        //     type:cc.Prefab
-        // },
-        // gameNode5:{
-        //     default:null,
-        //     type:cc.Prefab
-        // },
         gameObjs: {     //预制体
             default: [],
             type: [cc.Prefab]
@@ -61,338 +38,372 @@ cc.Class({
         gameNodes: {
             default: [],
             type: objBean
-        }       //游戏节点
-        // foo: {
-        //     // ATTRIBUTES:
-        //     default: null,        // The default value will be used only when the component attaching
-        //                           // to a node for the first time
-        //     type: cc.SpriteFrame, // optional, default is typeof default
-        //     serializable: true,   // optional, default is true
-        // },
-        // bar: {
-        //     get () {
-        //         return this._bar;
-        //     },
-        //     set (value) {
-        //         this._bar = value;
+        },       //游戏节点
+        linecanvas: {
+            default: null,
+            type: cc.Node
+        },
+        nodeContaint: {
+            default: null,
+            type: cc.Node,
+        }
+    },
+    //生成背景节点列表
+    createBGNodes() {
+        let that = this;
+        let width = that.nodeContaint.width;
+        let height = that.nodeContaint.height;
+        for (let i = 0; i < that.columCount + 2; ++i) {
+            let rowNode = [];
+            if (i > 0 && i < (that.columCount + 1)) {        //第一行和最后一行为空
+                for (let j = 0; j < that.rowCount + 2; ++j) {
+                    if (j > 0 && j < (that.columCount + 1)) {        //第一列和最后一列置空
+                        let newNodeObj = new objBean();
+                        let newNode = cc.instantiate(this.bgNode);
+                        let x = -71 * (that.rowCount / 2) + 71 * (j - 1) + 35.5 + width / 2;
+                        let y = -71 * (that.columCount / 2) + 71 * (i - 1) + 35.5 + height / 2;
+                        newNode.setPosition(x, y);
+                        gameNewNode.setPosition(x, y);
+                        newNodeObj.pointX = x;
+                        newNodeObj.pointY = y;
+                        newNodeObj.pointIndexX = j;
+                        newNodeObj.pointIndexY = i;
+                        newNodeObj.pointBgNode = newNode;
+                        rowNode.push(newNodeObj);
+                    } else {
+                        let newNodeObj = new objBean();
+                        //console.log("节点 = " + newNodeObj.pointX);
+                        let x = -71 * (that.rowCount / 2) + 71 * (j - 1) + 35.5 + width / 2;
+                        let y = -71 * (that.columCount / 2) + 71 * (i - 1) + 35.5 + height / 2;
+                        newNodeObj.pointX = x;
+                        newNodeObj.pointY = y;
+                        newNodeObj.pointIndexX = j;
+                        newNodeObj.pointIndexY = i;
+                        rowNode.push(newNodeObj);
+                    }
+                }
+            } else {
+                for (let j = 0; j < that.rowCount + 2; ++j) {
+                    let newNodeObj = new objBean();
+                    //console.log("节点 = " + newNodeObj.pointX);
+                    let x = -71 * (that.rowCount / 2) + 71 * (j - 1) + 35.5 + width / 2;
+                    let y = -71 * (that.columCount / 2) + 71 * (i - 1) + 35.5 + height / 2;
+                    newNodeObj.pointX = x;
+                    newNodeObj.pointY = y;
+                    newNodeObj.pointIndexX = j;
+                    newNodeObj.pointIndexY = i;
+                    rowNode.push(newNodeObj);
+                }
+            }
+            this.gameNodes.push(rowNode);
+        }
+    },
+    //生成可消除的列表
+    createGameNodes() {
+        // let gameObjs = [];
+        // let typeCount = 0;
+        // if (this.gameObjs) {
+        //     typeCount = this.gameObjs.length;
+        // }
+        // for (let i = 0; i < this.columCount; ++i) {
+        //     for (let j = 0; j < this.rowCount; ++j) {
+        //         if (objCount)
         //     }
-        // },
+        // }
     },
 
+    startWebSocket() {
+        this.ws = new WebSocket("ws://localhost:8080");
+        this.ws.onopen = function (event) {
+            console.log("Send Text WS was opened.");
+        };
+        this.ws.onmessage = function (event) {
+            console.log("response text msg: " + event.data);
+        };
+        this.ws.onerror = function (event) {
+            console.log("Send Text fired an error");
+        };
+        this.ws.onclose = function (event) {
+            console.log("WebSocket instance closed.");
+        };
 
-
-    // LIFE-CYCLE CALLBACKS:
+        // setTimeout(function () {
+        //     if (this.ws.readyState === WebSocket.OPEN) {
+        //         this.ws.send("Hello WebSocket, I'm a text message.");
+        //     }
+        //     else {
+        //         console.log("WebSocket instance wasn't ready...");
+        //     }
+        // }, 3);
+    },
 
     onLoad() {
+        // this.startWebSocket();
         let that = this;
-        let nodeHeight = 0;
-        let rowCount = 9;
-        let columCount = 9;
-        let nodeIndex = 0;
-        // let clickNode = new objBean();
-        let clickNode = null;
+        let canvasComponey = that.linecanvas.getComponent(cc.Graphics);
+        let width = that.nodeContaint.width;
+        let height = that.nodeContaint.height;
+        let nodeType = 0;
+        let clickedNode = new objBean();
+
+        // let clickedNode = null;
         let playAnim = null;
         let desAnim1 = null;
         let desAnim2 = null;
         cc.audioEngine.play(that.bgm, true, 1);
-        // for (let i = 0; i < columCount + 2; ++i) {
-        //     let rowNode = [];
-        //     if (i > 0 && i < (columCount + 1)) {        //第一行和最后一行为空
-        //         for (let j = 0; j < rowCount + 2; ++j) {
-        //             if (j > 0 && j < (columCount + 1)) {        //第一列和最后一列置空
-        //                 let emptyNode = new objBean();
-        //                 let newNode = cc.instantiate(this.bgNode);
-        //                 nodeIndex = parseInt(Math.random() * (4 + 1), 10);
-        //                 let gameNewNode = cc.instantiate(this.gameObjs[nodeIndex]);
-
-
-
-        //                 let x = -71 * (rowCount / 2) + 71 * (j - 1) + 35.5;
-        //                 let y = -71 * (columCount / 2) + 71 * (i - 1) + 35.5;
-        //                 newNode.setPosition(x, y);
-        //                 gameNewNode.setPosition(x, y);
-        //                 emptyNode.pointIndexX = j;
-        //                 emptyNode.pointIndexY = i;
-        //                 this.node.addChild(newNode);
-        //                 this.node.addChild(gameNewNode);
-        //                 emptyNode.pointBgNode = newNode;
-        //                 emptyNode.pointNode = gameNewNode;
-        //                 emptyNode.pointValue = nodeIndex;
-        //                 gameNewNode.on(cc.Node.EventType.TOUCH_START, function (event) {
-        //                     // console.log(gameNewNode.getPosition().x)
-        //                     if (clickNode.pointValue !== -1
-        //                         && clickNode !== emptyNode) {
-        //                         console.log("第二次点击")
-        //                         let node_1_x = clickNode.pointNode.getPosition().x;
-        //                         let node_1_y = clickNode.pointNode.getPosition().y;
-        //                         let node_2_x = emptyNode.pointNode.getPosition().x;
-        //                         let node_2_y = emptyNode.pointNode.getPosition().y;
-        //                         console.log("gameNewNode.getTag() = " + emptyNode.pointValue + ",   clickNode.getTag() = " + clickNode.pointValue);
-        //                         if (that.matchBolck(that.gameNodes, emptyNode, clickNode)) {
-        //                             cc.audioEngine.play(that.xiaocuMusic, false, 1);
-        //                             clickNode.pointValue = -1;
-        //                             emptyNode.pointValue = -1;
-        //                             clickNode.pointNode.destroy();
-        //                             emptyNode.pointNode.destroy();
-
-        //                             let desclickNode = cc.instantiate(that.desAnim);
-        //                             let desnewNode = cc.instantiate(that.desAnim);
-        //                             desclickNode.setPosition(node_1_x, node_1_y);
-        //                             desnewNode.setPosition(node_2_x, node_2_y);
-        //                             that.node.addChild(desclickNode);
-        //                             that.node.addChild(desnewNode);
-        //                             that.gameNodes[clickNode.pointIndexX][clickNode.pointIndexY].pointValue = -1;
-        //                             that.gameNodes[emptyNode.pointIndexX][emptyNode.pointIndexY].pointValue = -1;
-        //                             console.log("设置归零 " + clickNode.pointIndexX + ' + ' + clickNode.pointIndexY + ' + ' + emptyNode.pointIndexX + ' + ' + emptyNode.pointIndexY);
-        //                             console.log('clickNode ' + that.gameNodes[clickNode.pointIndexX][clickNode.pointIndexY].pointValue);
-        //                             console.log('emptyNode ' + that.gameNodes[emptyNode.pointIndexX][emptyNode.pointIndexY].pointValue);
-
-        //                         } else {
-        //                             console.log('不符合条件，重新选取' + clickNode.pointValue);
-        //                             cc.audioEngine.play(that.selectedBgm, false, 1);
-        //                             if (playAnim) {
-        //                                 playAnim.stop();
-        //                             }
-        //                             playAnim = emptyNode.pointNode.getComponent(cc.Animation);
-        //                             playAnim.play('click');
-        //                             clickNode = emptyNode;
-        //                         }
-        //                         // console.log(node_1_x + " + " + node_1_y + " + " + node_2_x + " + " + node_2_y)
-        //                     } else {
-        //                         console.log('为空，重新选取' + (clickNode === null));
-        //                         cc.audioEngine.play(that.selectedBgm, false, 1);
-        //                         playAnim = emptyNode.pointNode.getComponent(cc.Animation);
-        //                         playAnim.play('click');
-        //                         clickNode = emptyNode;
-        //                     }
-        //                 }, emptyNode);
-        //                 // node.parent = scene;
-
-        //                 rowNode.push(emptyNode);
-        //             } else {
-        //                 let emptyNode = new objBean();
-        //                 console.log("节点 = " + emptyNode.pointX);
-        //                 emptyNode.pointIndexX = j;
-        //                 emptyNode.pointIndexY = i;
-        //                 rowNode.push(emptyNode);
-        //             }
-        //         }
-        //     } else {
-        //         for (let j = 0; j < rowCount + 2; ++j) {
-        //             let emptyNode = new objBean();
-        //             console.log("节点 = " + emptyNode.pointX);
-        //             emptyNode.pointIndexX = j;
-        //             emptyNode.pointIndexY = i;
-        //             rowNode.push(emptyNode);
-        //         }
-        //     }
-
-        //     this.gameNodes.push(rowNode);
-        // }
-
-
-
-
-        for (let i = 0; i < columCount + 2; ++i) {
+        for (let i = 0; i < that.columCount + 2; ++i) {
             let rowNode = [];
-            if (i > 0 && i < (columCount + 1)) {        //第一行和最后一行为空
-                for (let j = 0; j < rowCount + 2; ++j) {
-                    if (j > 0 && j < (columCount + 1)) {        //第一列和最后一列置空
-                        let emptyNode = new objBean();
+            if (i > 0 && i < (that.columCount + 1)) {        //第一行和最后一行为空
+                for (let j = 0; j < that.rowCount + 2; ++j) {
+                    if (j > 0 && j < (that.columCount + 1)) {        //第一列和最后一列置空
+                        let newNodeObj = new objBean();
                         let newNode = cc.instantiate(this.bgNode);
-                        nodeIndex = parseInt(Math.random() * (4 + 1), 10);
-                        let gameNewNode = cc.instantiate(this.gameObjs[nodeIndex]);
-
-                        let x = -71 * (rowCount / 2) + 71 * (j - 1) + 35.5;
-                        let y = -71 * (columCount / 2) + 71 * (i - 1) + 35.5;
+                        nodeType = parseInt(Math.random() * (4 + 1), 10);
+                        let gameNewNode = cc.instantiate(this.gameObjs[nodeType]);
+                        let x = -71 * (that.rowCount / 2) + 71 * (j - 1) + 35.5 + width / 2;
+                        let y = -71 * (that.columCount / 2) + 71 * (i - 1) + 35.5 + height / 2;
                         newNode.setPosition(x, y);
                         gameNewNode.setPosition(x, y);
-                        emptyNode.pointIndexX = j;
-                        emptyNode.pointIndexY = i;
-                        this.node.addChild(newNode);
-                        this.node.addChild(gameNewNode);
-                        emptyNode.pointBgNode = newNode;
-                        emptyNode.pointNode = gameNewNode;
-                        emptyNode.pointValue = nodeIndex;
+                        newNodeObj.pointX = x;
+                        newNodeObj.pointY = y;
+                        newNodeObj.pointIndexX = j;
+                        newNodeObj.pointIndexY = i;
+                        this.nodeContaint.addChild(newNode);
+                        this.nodeContaint.addChild(gameNewNode);
+                        newNodeObj.pointBgNode = newNode;
+                        newNodeObj.pointNode = gameNewNode;
+                        newNodeObj.pointValue = nodeType;
                         gameNewNode.on(cc.Node.EventType.TOUCH_START, function (event) {
-                            // console.log(gameNewNode.getPosition().x)
-                            if (clickNode.pointValue !== -1
-                                && clickNode !== emptyNode) {
-                                console.log("第二次点击")
-                                let node_1_x = clickNode.pointNode.getPosition().x;
-                                let node_1_y = clickNode.pointNode.getPosition().y;
-                                let node_2_x = emptyNode.pointNode.getPosition().x;
-                                let node_2_y = emptyNode.pointNode.getPosition().y;
-                                console.log("gameNewNode.getTag() = " + emptyNode.pointValue + ",   clickNode.getTag() = " + clickNode.pointValue);
-                                if (that.matchBolck(that.gameNodes, emptyNode, clickNode)) {
-                                    cc.audioEngine.play(that.xiaocuMusic, false, 1);
-                                    clickNode.pointValue = -1;
-                                    emptyNode.pointValue = -1;
-                                    clickNode.pointNode.destroy();
-                                    emptyNode.pointNode.destroy();
+                            // //console.log(gameNewNode.getPosition().x)
+                            if (clickedNode.pointValue !== -1
+                                && clickedNode !== newNodeObj
+                                && clickedNode.pointValue === newNodeObj.pointValue) {
+                                //console.log("第二次点击")
+                                let node_1_x = clickedNode.pointNode.getPosition().x;
+                                let node_1_y = clickedNode.pointNode.getPosition().y;
+                                let node_2_x = newNodeObj.pointNode.getPosition().x;
+                                let node_2_y = newNodeObj.pointNode.getPosition().y;
+                                //console.log("gameNewNode.getTag() = " + newNodeObj.pointValue + ",   clickedNode.getTag() = " + clickedNode.pointValue);
+                                let points = that.matchBolck(that.gameNodes, newNodeObj, clickedNode);
+                                if (points === null) {
 
-                                    let desclickNode = cc.instantiate(that.desAnim);
-                                    let desnewNode = cc.instantiate(that.desAnim);
-                                    desclickNode.setPosition(node_1_x, node_1_y);
-                                    desnewNode.setPosition(node_2_x, node_2_y);
-                                    that.node.addChild(desclickNode);
-                                    that.node.addChild(desnewNode);
-                                    that.gameNodes[clickNode.pointIndexX][clickNode.pointIndexY].pointValue = -1;
-                                    that.gameNodes[emptyNode.pointIndexX][emptyNode.pointIndexY].pointValue = -1;
-                                    console.log("设置归零 " + clickNode.pointIndexX + ' + ' + clickNode.pointIndexY + ' + ' + emptyNode.pointIndexX + ' + ' + emptyNode.pointIndexY);
-                                    console.log('clickNode ' + that.gameNodes[clickNode.pointIndexX][clickNode.pointIndexY].pointValue);
-                                    console.log('emptyNode ' + that.gameNodes[emptyNode.pointIndexX][emptyNode.pointIndexY].pointValue);
+                                    points = that.matchBolckOne(that.gameNodes, newNodeObj, clickedNode);
+                                    if (points === null) {
 
+                                        points = that.matchBolckTwo(that.gameNodes, newNodeObj, clickedNode);
+                                        if (points !== null) {
+                                            //console.log('2折相连节点数 = ' + points.length)
+                                        }
+                                    } else {
+                                        //console.log('1折相连节点数 = ' + points.length)
+                                    }
                                 } else {
-                                    console.log('不符合条件，重新选取' + clickNode.pointValue);
+                                    //console.log('0折相连节点数 = ' + points.length)
+                                }
+                                if (points && points !== null && points.length > 0) {
+                                    cc.audioEngine.play(that.xiaocuMusic, false, 1);
+                                    clickedNode.pointValue = -1;
+                                    newNodeObj.pointValue = -1;
+                                    clickedNode.pointNode.destroy();
+                                    newNodeObj.pointNode.destroy();
+
+                                    let desclickedNode = cc.instantiate(that.desAnim);
+                                    let desnewNode = cc.instantiate(that.desAnim);
+                                    desclickedNode.setPosition(node_1_x, node_1_y);
+                                    desnewNode.setPosition(node_2_x, node_2_y);
+                                    that.nodeContaint.addChild(desclickedNode);
+                                    that.nodeContaint.addChild(desnewNode);
+                                    playAnim = null;
+                                    for (let k = 0; k < points.length; ++k) {
+                                        if (k === 0) {
+                                            canvasComponey.moveTo(points[k].pointX, points[k].pointY);
+                                        } else {
+                                            canvasComponey.lineTo(points[k].pointX, points[k].pointY);
+                                        }
+                                        //console.log('x = ' + points[k].pointX + ' + y = ' + points[k].pointY);
+                                    }
+                                    canvasComponey.stroke();
+
+                                    setTimeout(() => {
+                                        canvasComponey.clear();
+                                    }, 500);
+                                } else {
+                                    //console.log('不符合条件，重新选取' + clickedNode.pointValue);
                                     cc.audioEngine.play(that.selectedBgm, false, 1);
-                                    if (playAnim) {
+                                    if (playAnim !== null) {
                                         playAnim.stop();
                                     }
-                                    playAnim = emptyNode.pointNode.getComponent(cc.Animation);
+                                    playAnim = newNodeObj.pointNode.getComponent(cc.Animation);
                                     playAnim.play('click');
-                                    clickNode = emptyNode;
+                                    clickedNode = newNodeObj;
                                 }
-                                // console.log(node_1_x + " + " + node_1_y + " + " + node_2_x + " + " + node_2_y)
+                                // //console.log(node_1_x + " + " + node_1_y + " + " + node_2_x + " + " + node_2_y)
                             } else {
-                                console.log('为空，重新选取' + (clickNode === null));
+                                // cc.audioEngine.play(that.selectedBgm, false, 1);
+                                // if (playAnim) {
+                                //     playAnim.stop();
+                                // }
+                                if (playAnim !== null) {
+                                    playAnim.stop();
+                                }
+
+                                //console.log('为空，重新选取' + (clickedNode === null));
                                 cc.audioEngine.play(that.selectedBgm, false, 1);
-                                playAnim = emptyNode.pointNode.getComponent(cc.Animation);
+                                playAnim = newNodeObj.pointNode.getComponent(cc.Animation);
                                 playAnim.play('click');
-                                clickNode = emptyNode;
+                                clickedNode = newNodeObj;
                             }
-                        }, emptyNode);
+                        }, newNodeObj);
                         // node.parent = scene;
 
-                        rowNode.push(emptyNode);
+                        rowNode.push(newNodeObj);
                     } else {
-                        let emptyNode = new objBean();
-                        console.log("节点 = " + emptyNode.pointX);
-                        emptyNode.pointIndexX = j;
-                        emptyNode.pointIndexY = i;
-                        rowNode.push(emptyNode);
+                        let newNodeObj = new objBean();
+                        //console.log("节点 = " + newNodeObj.pointX);
+                        let x = -71 * (that.rowCount / 2) + 71 * (j - 1) + 35.5 + width / 2;
+                        let y = -71 * (that.columCount / 2) + 71 * (i - 1) + 35.5 + height / 2;
+                        newNodeObj.pointX = x;
+                        newNodeObj.pointY = y;
+                        newNodeObj.pointIndexX = j;
+                        newNodeObj.pointIndexY = i;
+                        rowNode.push(newNodeObj);
                     }
                 }
             } else {
-                for (let j = 0; j < rowCount + 2; ++j) {
-                    let emptyNode = new objBean();
-                    console.log("节点 = " + emptyNode.pointX);
-                    emptyNode.pointIndexX = j;
-                    emptyNode.pointIndexY = i;
-                    rowNode.push(emptyNode);
+                for (let j = 0; j < that.rowCount + 2; ++j) {
+                    let newNodeObj = new objBean();
+                    //console.log("节点 = " + newNodeObj.pointX);
+                    let x = -71 * (that.rowCount / 2) + 71 * (j - 1) + 35.5 + width / 2;
+                    let y = -71 * (that.columCount / 2) + 71 * (i - 1) + 35.5 + height / 2;
+                    newNodeObj.pointX = x;
+                    newNodeObj.pointY = y;
+                    newNodeObj.pointIndexX = j;
+                    newNodeObj.pointIndexY = i;
+                    rowNode.push(newNodeObj);
                 }
             }
 
             this.gameNodes.push(rowNode);
         }
-
-
-
-
-        // for (let i = 0; i < columCount; ++i) {
-        //     let rowNode = [];
-        //     for (let j = 0; j < rowCount; ++j) {
-        //         // var scene = cc.director.getScene();
-        //         let newNode = cc.instantiate(this.bgNode);
-        //         nodeIndex = parseInt(Math.random() * (4 + 1), 10);
-        //         let gameNewNode = cc.instantiate(this.gameObjs[nodeIndex]);
-        //         gameNewNode.setTag(nodeIndex);
-        //         gameNewNode.on(cc.Node.EventType.TOUCH_START, function (event) {
-        //             // console.log(gameNewNode.getPosition().x)
-        //             if (clickNode !== null
-        //                 && clickNode !== gameNewNode) {
-        //                 console.log("第二次点击")
-        //                 let node_1_x = clickNode.getPosition().x;
-        //                 let node_1_y = clickNode.getPosition().y;
-        //                 let node_2_x = gameNewNode.getPosition().x;
-        //                 let node_2_y = gameNewNode.getPosition().y;
-        //                 console.log("gameNewNode.getTag() = " + gameNewNode.getTag() + ",   clickNode.getTag() = " + clickNode.getTag());
-        //                 if (((node_1_x === node_2_x && ((node_1_y === node_2_y + 71) || (node_1_y === node_2_y - 71)))
-        //                     || (node_1_y === node_2_y && ((node_1_x === node_2_x + 71) || (node_1_x === node_2_x - 71))))
-        //                     && (gameNewNode.getTag() === clickNode.getTag())
-        //                 ) {
-        //                     cc.audioEngine.play(that.xiaocuMusic, false, 1);
-
-        //                     clickNode.destroy();
-        //                     gameNewNode.destroy();
-        //                     clickNode = null;
-
-        //                     let desclickNode = cc.instantiate(that.desAnim);
-        //                     let desnewNode = cc.instantiate(that.desAnim);
-        //                     desclickNode.setPosition(node_1_x, node_1_y);
-        //                     desnewNode.setPosition(node_2_x, node_2_y);
-        //                     that.node.addChild(desclickNode);
-        //                     that.node.addChild(desnewNode);
-        //                 } else {
-        //                     cc.audioEngine.play(that.selectedBgm, false, 1);
-        //                     if (playAnim) {
-        //                         playAnim.stop();
-        //                     }
-        //                     playAnim = gameNewNode.getComponent(cc.Animation);
-        //                     playAnim.play('click');
-        //                     clickNode = gameNewNode;
-        //                 }
-        //                 // console.log(node_1_x + " + " + node_1_y + " + " + node_2_x + " + " + node_2_y)
-        //             } else {
-        //                 cc.audioEngine.play(that.selectedBgm, false, 1);
-        //                 playAnim = gameNewNode.getComponent(cc.Animation);
-        //                 playAnim.play('click');
-        //                 clickNode = gameNewNode;
-        //             }
-        //         }, gameNewNode);
-        //         // node.parent = scene;
-        //         let x = -71 * (rowCount / 2) + 71 * j + 35.5;
-        //         let y = -71 * (columCount / 2) + 71 * i + 35.5;
-        //         newNode.setPosition(x, y);
-        //         gameNewNode.setPosition(x, y);
-
-        //         this.node.addChild(newNode);
-        //         this.node.addChild(gameNewNode);
-        //         rowNode.push(newNode);
-        //         // alert('x = ' + newNode.getPosition().x)
-        //     }
-        //     this.bgNodes.push(rowNode);
-        // }
     },
 
     start() {
 
     },
-    // matchBolck(datas, srcPt, destPt) {
+    // 0折相连
     matchBolck(datas, startPoint, endPoint) {
-
-        // 如果不属于0折连接则返回false  
         if (startPoint.pointIndexX != endPoint.pointIndexX && startPoint.pointIndexY != endPoint.pointIndexY) {
-            console.log("x和y不相等，直接false")
-            return false;
-        }
-        if (startPoint.pointValue !== endPoint.pointValue) {
-            console.log("类型不相等，直接false")
-            return false;
+            return null;
         }
         let min, max;
-
-        // 如果两点的x坐标相等，则在水平方向上扫描  
         if (startPoint.pointIndexX == endPoint.pointIndexX) {
             min = startPoint.pointIndexY < endPoint.pointIndexY ? startPoint.pointIndexY : endPoint.pointIndexY;
             max = startPoint.pointIndexY > endPoint.pointIndexY ? startPoint.pointIndexY : endPoint.pointIndexY;
             for (min++; min < max; min++) {
-                if (!(datas[startPoint.pointIndexX][min].isEmpty()))
-                    console.log("竖向有非空，直接false")
-                return false;
+                if (!(datas[min][startPoint.pointIndexX].isEmpty())) {
+                    return null;
+                }
             }
-        }
-        // 如果两点的y坐标相等，则在竖直方向上扫描  
-        else {
+        } else {// 如果两点的y坐标相等，则在竖直方向上扫描  
             min = startPoint.pointIndexX < endPoint.pointIndexX ? startPoint.pointIndexX : endPoint.pointIndexX;
             max = startPoint.pointIndexX > endPoint.pointIndexX ? startPoint.pointIndexX : endPoint.pointIndexX;
             for (min++; min < max; min++) {
-                if (!(datas[min][startPoint.pointIndexY].isEmpty()))
-                    console.log("横向有非空，直接false")
-                return false;
+                if (!(datas[startPoint.pointIndexY][min].isEmpty())) {
+                    return null;
+                }
             }
         }
-        return true;
+        return [startPoint, endPoint];
+    },
+    //1折相连
+    matchBolckOne(datas, startPoint, endPoint) {
+        // if (startPoint.pointIndexX == endPoint.pointIndexX || startPoint.pointIndexY == endPoint.pointIndexY) {
+        //     return null;
+        // }
+        let linePoint = []; //链接点
+        let pt = new objBean(startPoint.pointIndexX, endPoint.pointIndexY, startPoint.pointX, endPoint.pointY);
+        let stMatch = false;
+        let tdMatch = false;
+        if (datas[pt.pointIndexY][pt.pointIndexX].isEmpty()) {
+            stMatch = this.matchBolck(datas, startPoint, pt);
+            tdMatch = (stMatch !== null) ?
+                this.matchBolck(datas, pt, endPoint) : stMatch;
+            if (stMatch !== null && tdMatch !== null) {
+                linePoint.push(startPoint);
+                linePoint.push(pt);
+                linePoint.push(endPoint);
+                return linePoint;
+            }
+        }
+        pt = new objBean(endPoint.pointIndexX, startPoint.pointIndexY, endPoint.pointX, startPoint.pointY);
+        if (datas[pt.pointIndexY][pt.pointIndexX].isEmpty()) {
+            stMatch = this.matchBolck(datas, startPoint, pt);
+            tdMatch = (stMatch !== null) ?
+                this.matchBolck(datas, pt, endPoint) : stMatch;
+            if (stMatch !== null && tdMatch !== null) {
+                linePoint.push(startPoint);
+                linePoint.push(pt);
+                linePoint.push(endPoint);
+                return linePoint;
+            }
+        }
+        return null;
+    },
+    matchBolckTwo(datas, startPoint, endPoint) {
+        if (datas && datas !== null && datas.length > 0) {
+            let pointList = [];     //链接点
+            let stMatch = null;
+            let etMatch = null;
+            for (let i = startPoint.pointIndexX + 1; i < this.rowCount + 2; ++i) {
+                if (datas[startPoint.pointIndexY][i].pointValue === -1) {
+                    stMatch = this.matchBolckOne(datas, datas[startPoint.pointIndexY][i], endPoint);
+                    if (stMatch !== null && stMatch.length > 0) {
+                        pointList.push(startPoint);
+                        pointList = pointList.concat(stMatch);
+                        return pointList;
+                    }
+                } else {
+                    break;
+                }
+            }
+            for (let i = startPoint.pointIndexX - 1; i >= 0; --i) {
+                if (datas[startPoint.pointIndexY][i].pointValue === -1) {
+                    stMatch = this.matchBolckOne(datas, datas[startPoint.pointIndexY][i], endPoint);
+                    if (stMatch !== null && stMatch.length > 0) {
+                        pointList.push(startPoint);
+                        pointList = pointList.concat(stMatch);
+                        return pointList;
+                    }
+                } else {
+                    break;
+                }
+            }
+            for (let i = startPoint.pointIndexY + 1; i < this.columCount + 2; ++i) {
+                if (datas[i][startPoint.pointIndexX].pointValue === -1) {
+                    stMatch = this.matchBolckOne(datas, datas[i][startPoint.pointIndexX], endPoint);
+                    if (stMatch !== null && stMatch.length > 0) {
+                        pointList.push(startPoint);
+                        pointList = pointList.concat(stMatch);
+                        return pointList;
+                    }
+                } else {
+                    break;
+                }
+            }
+            for (let i = startPoint.pointIndexY - 1; i >= 0; --i) {
+                if (datas[i][startPoint.pointIndexX].pointValue === -1) {
+                    stMatch = this.matchBolckOne(datas, datas[i][startPoint.pointIndexX], endPoint);
+                    if (stMatch !== null && stMatch.length > 0) {
+                        pointList.push(startPoint);
+                        pointList = pointList.concat(stMatch);
+                        return pointList;
+                    }
+                } else {
+                    break;
+                }
+            }
+        } else {
+            return null;
+        }
     }
-    // update (dt) {},
 });
