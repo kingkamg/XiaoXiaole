@@ -75,9 +75,42 @@ cc.Class({
         nodeContaint: {
             default: null,
             type: cc.Node,
-        }
+        },
+
+        // 匹配界面
+        pipeiView: {
+            default: null,
+            type: cc.Node
+        },
+        pipeiMyName: {
+            default: null,
+            type: cc.Label
+        },
+        pipeiOpName: {
+            default: null,
+            type: cc.Label
+        },
+        pipeiMyCover: {
+            default: null,
+            type: cc.Sprite
+        },
+        pipeiOpCover: {
+            default: null,
+            type: cc.Sprite
+        },
+        pipeiTimeLable: {
+            default: null,
+            type: cc.Label
+        },
+        pipeiTimer: null,
+        pipeiTime: 0,
+        rootIds: ''
     },
 
+
+    popGame() {
+        cc.director.popScene();
+    },
 
     restartGame() {
         if (this.nodeContaint) {
@@ -225,11 +258,38 @@ cc.Class({
         // }
     },
 
+
     startWebSocket() {
         let that = this;
         let data = new Date();
         that.time = data.getTime();
         console.log("开始连接配对");
+        // cc.loader.load(remoteUrl, function (err, texture) {
+        //     // Use texture to create sprite frame
+        // });
+        cc.loader.load('http://p003bt12y.bkt.clouddn.com/mycover.jpg', function (err, texture) {
+            // console.log("error = " + err);
+            // that.pipeiMyName.getComponent(cc.Label).string = JSON.stringify(err);
+            var frame = new cc.SpriteFrame(texture);
+            that.pipeiMyCover.spriteFrame = frame;
+        });
+        that.pipeiTimer = setInterval(() => {
+            that.pipeiTime += 1;
+            // console.log("时间 = " + that.pipeiTime);
+            if (that.pipeiTime < 60) {
+                if (that.pipeiTime < 10) {
+                    that.pipeiTimeLable.getComponent(cc.Label).string = "00:0" + that.pipeiTime;
+                } else {
+                    that.pipeiTimeLable.getComponent(cc.Label).string = "00:" + that.pipeiTime;
+                }
+            } else {
+                if (that.pipeiTime % 60 < 10) {
+                    that.pipeiTimeLable.getComponent(cc.Label).string = "0" + parseInt(that.pipeiTime / 60) + ":0" + that.pipeiTime % 60;
+                } else {
+                    that.pipeiTimeLable.getComponent(cc.Label).string = "0" + parseInt(that.pipeiTime / 60) + ":" + that.pipeiTime % 60;
+                }
+            }
+        }, 1000);
         this.ws = new WebSocket("ws://172.16.10.44:8888/webSocket");
         this.ws.onopen = function (event) {
             console.log("websocke连接成功");
@@ -252,6 +312,28 @@ cc.Class({
         this.ws.onmessage = function (event) {
             console.log("response text msg: " + event.data);
             console.log("接收数据成功");
+            if (event.data) {
+                let jsonData = JSON.parse(event.data);
+                if (jsonData.bType === 1) {
+                    if (that.ws && that.ws.readyState === WebSocket.OPEN) {
+
+                        let jsonString = JSON.stringify(
+                            {
+                                mType: 1,
+                                bType: 2,
+                                uid: that.myuuid + '',
+                                data: {
+                                    openId: that.myuuid + '',
+                                    subject: '连连看1区'
+                                }
+                            });
+                        console.log("发送的json数据 = " + jsonString);
+                        that.ws.send(jsonString);
+                    }
+                } else if (jsonData.bType === 2) {
+                    that.rootIds = jsonData.data.roomId;
+                }
+            }
             // that.ws.onclose();
             // let dataObj = JSON.parse(event.data);
         };
@@ -274,7 +356,6 @@ cc.Class({
 
     startGame() {
         let that = this;
-        that.startWebSocket();
         if (that.gameNodes && that.gameNodes.length > 0) {
             that.gameNodes = [];
         }
@@ -287,7 +368,7 @@ cc.Class({
         let playAnim = null;
         let desAnim1 = null;
         let desAnim2 = null;
-
+        let currentSocr = 1;
         // that._bgMusicPlay = cc.audioEngine.play(that.bgm, true, 1);
         let index = 0;
         for (let i = 0; i < that.columCount + 2; ++i) {
@@ -343,11 +424,13 @@ cc.Class({
                                         let jsonString = JSON.stringify(
                                             {
                                                 mType: 1,
-                                                bType: 2,
-                                                uid: that.myuuid + '',
+                                                bType: 5,
                                                 data: {
                                                     openId: that.myuuid + '',
-                                                    subject: '连连看1区'
+                                                    currentCompleted: currentSocr++,
+                                                    currentScore: currentSocr++,
+                                                    isOver: 0,
+                                                    roomId: that.rootIds
                                                 }
                                             });
                                         console.log("发送的json数据 = " + jsonString);
@@ -449,6 +532,7 @@ cc.Class({
         cc.audioEngine.play(this.bgm, true, 1);
         this.myuuid = parseInt(Math.random() * 1000000);
         this.startGame();
+        this.startWebSocket();
     },
 
     // start() {
