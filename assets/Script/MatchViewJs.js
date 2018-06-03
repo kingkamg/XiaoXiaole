@@ -12,6 +12,22 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
+        myCoverSprite: {
+            type: cc.Sprite,
+            default: null
+        },
+        opCoverSprite: {
+            type: cc.Sprite,
+            default: null
+        },
+        myNameLable: {
+            type: cc.Label,
+            default: null
+        },
+        opNameLable: {
+            type: cc.Label,
+            default: null
+        },
         // foo: {
         //     // ATTRIBUTES:
         //     default: null,        // The default value will be used only when the component attaching
@@ -28,12 +44,14 @@ cc.Class({
         //     }
         // },
     },
-
+    cancleMatch() {
+        console.log("关闭游戏");
+    },
     // LIFE-CYCLE CALLBACKS:
 
     // onLoad () {},
 
-    start () {
+    start() {
 
     },
 

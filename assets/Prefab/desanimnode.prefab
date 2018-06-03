@@ -111,7 +111,7 @@
     "playOnLoad": true
   },
   {
-    "__type__": "23dca8cY6RGC6Ld9+C7o+0J",
+    "__type__": "56304PL2ndG5rNChsGPpxzQ",
     "_name": "",
     "_objFlags": 0,
     "node": {
@@ -125,7 +125,7 @@
       "__id__": 1
     },
     "asset": {
-      "__id__": 0
+      "__uuid__": "82694347-ac8c-42fc-bc20-de5b3c9e74db"
     },
     "fileId": "0b3vxWnv1G7aVwAf11ysAs",
     "sync": false
