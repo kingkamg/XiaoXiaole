@@ -526,7 +526,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 44,
+      "width": 44.49,
       "height": 40
     },
     "_rotationX": 0,
@@ -682,7 +682,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 182,
+      "width": 182.43,
       "height": 63
     },
     "_rotationX": 0,
@@ -841,7 +841,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 44,
+      "width": 44.49,
       "height": 40
     },
     "_rotationX": 0,
@@ -1083,7 +1083,7 @@
       }
     ],
     "_tag": -1,
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 40
@@ -1645,6 +1645,10 @@
       "__id__": 8
     },
     "_enabled": true,
+    "socketModul": {
+      "__id__": 6
+    },
+    "socketComponent": null,
     "_bgMusicPlay": null,
     "overDialog": {
       "__id__": 27
@@ -1758,7 +1762,7 @@
       }
     ],
     "_tag": -1,
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 71
@@ -1947,7 +1951,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 100,
+      "width": 100.1,
       "height": 40
     },
     "_rotationX": 0,
@@ -2195,10 +2199,12 @@
       "__id__": 52
     },
     "_enabled": true,
-    "_type": 1,
+    "_type": 2,
     "_segements": 40,
-    "_N$spriteFrame": null,
-    "_N$alphaThreshold": 1,
+    "_N$spriteFrame": {
+      "__uuid__": "e9bfe5fc-714d-4a8d-9359-80b9c0d2f56d"
+    },
+    "_N$alphaThreshold": 0,
     "_N$inverted": false
   },
   {
@@ -2291,7 +2297,7 @@
       }
     ],
     "_tag": -1,
-    "_active": true,
+    "_active": false,
     "_components": [],
     "_prefab": null,
     "_id": "95zBVMDBFDjoWkM/NHPejE",
@@ -2831,9 +2837,18 @@
     "myNameLable": {
       "__id__": 57
     },
+    "opInfoModul": {
+      "__id__": 58
+    },
     "opNameLable": {
       "__id__": 64
-    }
+    },
+    "socketModul": {
+      "__id__": 6
+    },
+    "socketComponent": null,
+    "myUserData": null,
+    "opUsersData": []
   },
   {
     "__type__": "cc.Canvas",
@@ -2858,13 +2873,6 @@
     "node": {
       "__id__": 5
     },
-    "_enabled": true,
-    "socketModul": {
-      "__id__": 6
-    },
-    "socketComponent": null,
-    "matchView": {
-      "__id__": 44
-    }
+    "_enabled": true
   }
 ]

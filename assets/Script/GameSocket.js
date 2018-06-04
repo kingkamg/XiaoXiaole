@@ -95,14 +95,22 @@ cc.Class({
         };
         that.socket.onmessage = function (socketData) {
             console.log("onmessage");
-            cc.director.GlobalEvent.emit(GlobleVar.SOCKET_EVENT_RECEIVE, //接收到消息
-                {
-                    msg: 'received message',                             //描述
-                    adress: adress,                                      //地址
-                    data: socketData                                //接收到的数据
+            if (!ObjUtil.isEmpty(socketData)) {
+                try {
+                    cc.director.GlobalEvent.emit(GlobleVar.SOCKET_EVENT_RECEIVE, //接收到消息
+                        {
+                            msg: 'received message',                             //描述
+                            adress: adress,                                      //地址
+                            data: JSON.parse(socketData.data)                                //接收到的数据
+                        }
+                    );
+                    console.log("onmessage事件发送完成");
+                } catch (error) {
+                    console.log('事件发送异常：' + error);
                 }
-            );
-            console.log("onmessage事件发送完成");
+            } else {
+                console.log("对象为空");
+            }
         };
         that.socket.onerror = function (errData) {
             console.log("onerror");
@@ -127,6 +135,8 @@ cc.Class({
         };
 
     },
+
+
 
     closeSocket() {
         this.cancleCheckHeart();
@@ -170,16 +180,29 @@ cc.Class({
         }
     },
 
+    /**
+     * 
+     * @param {*} data 要发送的数据(不是json)
+     * @return 返回是否发送正常
+     */
     sendMsg(data) {
-        if (ObjUtil.isEmpty(data)) {
-            console.error("消息体为空，发送失败");
-            return;
+        try {
+            if (ObjUtil.isEmpty(data)) {
+                console.error("消息体为空，发送失败");
+                return false;
+            }
+            if (!ObjUtil.isEmpty(this.socket) && this.socket.readyState === WebSocket.OPEN) {    //检测是否存在长连接
+                this.socket.send(JSON.stringify(data));
+                return true;
+            } else {
+                this.checkReConnect();
+                return false;
+            }
+        } catch (e) {
+            console.log("sendMsg error: " + e);
+            return false;
         }
-        if (!ObjUtil.isEmpty(this.socket) && this.socket.readyState === WebSocket.OPEN) {    //检测是否存在长连接
-            this.socket.send(JSON.stringify(data));
-        } else {
-            this.checkReConnect();
-        }
+
     }
 
 });

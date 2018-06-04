@@ -1,9 +1,17 @@
+var GlobleData = require("GlobleData")
 var NodeBean = require('NodeBean')
 var TypeBean = require('TypeBean')
+var GlobleVar = require("GlobleVar")
+var ObjUtil = require("ObjUtil")
 cc.Class({
     extends: cc.Component,
 
     properties: {
+        socketModul: {
+            default: null,
+            type: cc.Node
+        },
+        socketComponent: null,
         _bgMusicPlay: {
             default: null
         },
@@ -75,6 +83,9 @@ cc.Class({
             type: cc.Label
         }
     },
+    onDestroy() {
+        cc.director.GlobalEvent.off(GlobleVar.SOCKET_EVENT_BEGINGAME);
+    },
     popGame() {
         cc.director.popScene();
     },
@@ -100,16 +111,46 @@ cc.Class({
             for (let j = 1; j < this.rowCount + 1; ++j) {
                 if (this.gameNodes[i][j].pointValue >= 0) {
                     console.log("还没结束");
+                    let jsonString = {
+                        mType: 1,
+                        bType: 5,
+                        data: {
+                            openId: GlobleData.myUserInfo.userId,
+                            currentCompleted: this.myLeftNode,
+                            currentScore: this.myLeftNode,
+                            isOver: 0,
+                            roomId: GlobleData.roomId
+                        }
+                    };
+                    console.log("发送未结束分数数据 = " + JSON.stringify(jsonString));
+                    this.socketComponent.sendMsg(jsonString);
                     return false;
                 }
             }
         }
         console.log("已经结束了");
+        this.gameOver();
+        let jsonString = {
+            mType: 1,
+            bType: 5,
+            data: {
+                openId: GlobleData.myUserInfo.userId,
+                currentCompleted: this.myLeftNode,
+                currentScore: this.myLeftNode,
+                isOver: 1,
+                roomId: GlobleData.roomId
+            }
+        };
+        console.log("发送结束分数数据 = " + JSON.stringify(jsonString));
+        this.socketComponent.sendMsg(jsonString);
+        return true;
+    },
+    gameOver() {
+        cc.director.GlobalEvent.off(GlobleVar.SOCKET_EVENT_RECEIVE);
         this.overDialog.active = true;
         if (this.gameLeftTimer) {
             clearInterval(this.gameLeftTimer);
         }
-        return true;
     },
     /**
      * 随机打乱地图
@@ -164,8 +205,45 @@ cc.Class({
         return gameObjs;
     },
 
+    messageHandle: function (result) {
+        if (!ObjUtil.isEmpty(result.data)) {
+            console.log("数据流程1");
+            if (!ObjUtil.isEmpty(result.data) && result.data.bType == 5) {
+                console.log("收到未结束分数 = " + JSON.stringify(result.data));
+                if (!ObjUtil.isEmpty(result.data.data) && !ObjUtil.isEmpty(result.data.data.currentCompleted)) {
+                    if (GlobleData.myUserInfo.userId == result.data.data.openId) {
 
+                    } else {
+                        this.opLeftNodeLable.getComponent(cc.Label).string = result.data.data.currentCompleted;
+                    }
+                }
+            } else if (!ObjUtil.isEmpty(result.data) && result.data.bType == 6) {
+                console.log("收到结束分数 = " + JSON.stringify(result.data));
+                if (!ObjUtil.isEmpty(result.data.data) && !ObjUtil.isEmpty(result.data.data.currentCompleted)) {
+                    if (GlobleData.myUserInfo.userId == result.data.data.openId) {
+
+                    } else {
+                        this.opLeftNodeLable.getComponent(cc.Label).string = result.data.data.currentCompleted;
+                        this.gameOver();
+                    }
+                }
+            } else {
+                console.log("其它类型：" + result.data.bType + " + " + result.data.code);
+            }
+            // else if (!ObjUtil.isEmpty(result.data) && result.data.bType == 3 && result.data.code == 200) {
+            //     // this.node.active = false;
+            //     console.log("数据为空3");
+            // } 
+
+            // setTimeout(() => {
+            //     this.node.active = false;
+            // }, 2000);
+        } else {
+            console.log("数据为空2");
+        }
+    },
     startGame() {
+        cc.director.GlobalEvent.on(GlobleVar.SOCKET_EVENT_RECEIVE, this.messageHandle, this);
         let that = this;
         if (that.gameNodes && that.gameNodes.length > 0) {
             that.gameNodes = [];
@@ -257,9 +335,9 @@ cc.Class({
                                     setTimeout(() => {
                                         canvasComponey.clear();
                                     }, 500);
-                                    that.isOver();
                                     that.myLeftNode -= 2;
                                     that.myLeftNodeLable.getComponent(cc.Label).string = that.myLeftNode;
+                                    that.isOver();
                                 } else {
                                     //console.log('不符合条件，重新选取' + clickedNode.pointValue);
                                     cc.audioEngine.play(that.selectedBgm, false, 1);
@@ -338,12 +416,15 @@ cc.Class({
                 }
             }
         }, 1000);
-        // that.node.getComponent(cc.Label).string = location.href;;
+        // that.node.getComponent(cc.Label).string = location.href;
     },
     onLoad() {
         cc.audioEngine.play(this.bgm, true, 1);
         // this.myuuid = parseInt(Math.random() * 1000000);
-        this.startGame();
+        this.socketComponent = this.socketModul.getComponent("GameSocket");
+        cc.director.GlobalEvent.on(GlobleVar.SOCKET_EVENT_BEGINGAME, () => {
+            this.restartGame();
+        }, this);
         // this.startWebSocket();
     },
 
