@@ -81,7 +81,8 @@ cc.Class({
         gameLeftTimeLable: {
             default: null,
             type: cc.Label
-        }
+        },
+
     },
     onDestroy() {
         cc.director.GlobalEvent.off(GlobleVar.SOCKET_EVENT_BEGINGAME);

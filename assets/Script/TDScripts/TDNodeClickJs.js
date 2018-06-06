@@ -12,10 +12,6 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        // playModul: {
-        //     type: cc.Node,
-        //     default: null
-        // }
         // foo: {
         //     // ATTRIBUTES:
         //     default: null,        // The default value will be used only when the component attaching
@@ -38,11 +34,11 @@ cc.Class({
     // onLoad () {},
 
     start() {
-
+        // this.node.on(cc.eventManager.tou)
+        this.node.on(cc.Node.EventType.TOUCH_START, function (event) {
+            this.node.destroy();
+        }, this);
     },
-    animEnd() {
-        // console.log('动画结束');
-        this.node.destroy();
-    }
+
     // update (dt) {},
 });
