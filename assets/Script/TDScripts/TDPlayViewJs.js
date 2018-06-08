@@ -20,7 +20,10 @@ cc.Class({
         },
         rowCount: 7,
         columCount: 7,
-
+        disableNode: {
+            default: null,
+            type: cc.Prefab
+        }
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -32,6 +35,8 @@ cc.Class({
         this.lastPointX = -1;      //最后一个选中的点的x坐标
         this.lastPointY = -1;      //最后一个选中的点的y坐标
         this.lastType = -1;         //最后一个选中的点的类型
+        this.lineGraphics = this.gameNodeContainer.getComponent(cc.Graphics);       //图画画板
+        this.canTouch = true;       //是否可以触摸交互，在连成矩形时由于触摸可能没抬起而导致的莫名其妙的线
         this.creatorNodePool();
         this.creatorNodes();
     },
@@ -71,9 +76,9 @@ cc.Class({
         let radomPointType = 0;
         let positIonX = this.viewWidth / 2 - this.rowCount / 2.0 * this.gameNodeWidth + this.gameNodeWidth / 2;
         let positiony = this.viewHeight / 2 - this.columCount / 2.0 * this.gameNodeHeight + this.gameNodeHeight / 2;
-        for (let i = 0; i < this.rowCount; ++i) {
+        for (let i = 0; i < this.columCount; ++i) {
             let rowNodes = [];
-            for (let j = 0; j < this.columCount; ++j) {
+            for (let j = 0; j < this.rowCount; ++j) {
                 let nodeBean = new TDNodeBean();
                 let x = positIonX + j * this.gameNodeWidth;
                 let y = positiony + i * this.gameNodeHeight;
@@ -81,7 +86,10 @@ cc.Class({
                 nodeBean.nodeIndexY = i;
                 nodeBean.nodePositionX = x;
                 nodeBean.nodePositionY = y;
-                radomPointType = parseInt(Math.random() * 4);
+                radomPointType = parseInt(Math.random() * (this.nodePrefabs.length + 1));
+                if (radomPointType === this.nodePrefabs.length) {
+                    radomPointType = -2;
+                }
                 let gamePointNode;
                 nodeBean.nodeType = radomPointType;
                 gamePointNode = this.getRadomPoint(radomPointType);
@@ -134,6 +142,9 @@ cc.Class({
                     gamePointNode = cc.instantiate(this.nodePrefabs[3]);
                 }
                 break;
+            case -2:
+                gamePointNode = cc.instantiate(this.disableNode);
+                break;
         }
         return gamePointNode;
     },
@@ -177,6 +188,7 @@ cc.Class({
                             this.gameNodes[j][i].nodeType = -1;
                             this.gameNodes[j][i].nodeGameNode = null;
                             let action = cc.moveTo(0.2, this.gameNodes[k][i].nodePositionX, this.gameNodes[k][i].nodePositionY);
+                            action.easing(cc.easeBounceOut());
                             this.gameNodes[k][i].nodeGameNode.runAction(action);
                             // console.log('转换后 k = ' + k + ' + i = ' + i + ' = ' + ObjUtil.isEmpty(this.gameNodes[k][i].nodeGameNode) + ', type = ' + this.gameNodes[k][i].nodeType);
                             break;
@@ -188,7 +200,7 @@ cc.Class({
                 // this.gameNodes[i][i].nodeGameNode.runAction(action);
             }
         }
-
+        this.lineGraphics.clear();
         this.creatNewNode();
         // setTimeout(() => {
         //     console.log("新位置 = " + this.gameNodes[0][0].nodeGameNode.getPosition().x + ' + ' + this.gameNodes[0][0].nodeGameNode.getPosition().y);
@@ -210,10 +222,60 @@ cc.Class({
                     this.gameNodeContainer.addChild(gamePointNode);
                     this.gameNodes[j][i].nodeGameNode = gamePointNode;
                     let action = cc.moveTo(0.4, x, y);
+                    action.easing(cc.easeBounceOut());
                     this.gameNodes[j][i].nodeGameNode.runAction(action);
                 }
             }
         }
+    },
+
+    getLineColor() {
+        switch (this.lastType) {
+            case 0:
+                return cc.hexToColor('#e84d60');
+                break;
+            case 1:
+                return cc.hexToColor('#77c298');
+                break;
+            case 2:
+                return cc.hexToColor('#fecd6c');
+                break;
+            case 3:
+                return cc.hexToColor('#a4547d');
+                break;
+        }
+        return cc.hexToColor('#00000000');
+    },
+
+    drawPointLine(touchX, touchY) {
+        this.lineGraphics.clear();
+        this.lineGraphics.moveTo(touchX, touchY);
+        if (!ObjUtil.isEmpty(this.selectedNodes)) {
+            for (let i = this.selectedNodes.length - 1; i >= 0; --i) {
+                this.lineGraphics.lineTo(this.selectedNodes[i].nodePositionX, this.selectedNodes[i].nodePositionY);
+            }
+            this.lineGraphics.lineWidth = 10;
+            // this.lineGraphics.lineJoin = cc.Graphics.LineJoin.ROUND;
+            this.lineGraphics.strokeColor = this.getLineColor();
+            this.lineGraphics.stroke();
+        }
+    },
+    /**
+     * 检测是否形成矩形
+     */
+    checkIsCicle(node) {
+        if (!ObjUtil.isEmpty(this.selectedNodes) && !ObjUtil.isEmpty(node)) {
+            for (let i = 0; i < this.selectedNodes.length; ++i) {
+                if (node == this.selectedNodes[i]) {
+                    if (this.selectedNodes.length - 1 - i > 2) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        }
+        return false;
     },
 
     nodeTouched(event) {
@@ -222,16 +284,18 @@ cc.Class({
         // var v1 = cc.v2(20, 20);
         // var v2 = cc.v2(5, 5);
         // cc.pDistance(v1, v2); // 21.213203435596427;
+        this.drawPointLine(touchX, touchY);
         for (let i = 0; i < this.columCount; ++i) {
             for (let j = 0; j < this.rowCount; ++j) {
                 if (this.gameNodes[i][j].nodeType >= 0 && this.gameNodes[i][j].isSelected == false) {
+                    // if (this.gameNodes[i][j].nodeType >= 0) {
                     if (cc.pDistance(cc.v2(touchX, touchY), cc.v2(this.gameNodes[i][j].nodePositionX, this.gameNodes[i][j].nodePositionY)) < this.gameNodeWidth / 1.8) {
                         if (this.lastType >= 0) {
                             if (this.gameNodes[i][j].nodeType == this.lastType) {
                                 console.log("节点类型 this.gameNodes[i][j].nodeType = " + this.gameNodes[i][j].nodeType + ', this.lastType = ' + this.lastType);
-                                if ((Math.abs(this.gameNodes[i][j].nodeIndexX - this.lastIndexX) <= 1
+                                if ((Math.abs(this.gameNodes[i][j].nodeIndexX - this.lastIndexX) === 1
                                     && this.gameNodes[i][j].nodeIndexY == this.lastIndexY)
-                                    || (Math.abs(this.gameNodes[i][j].nodeIndexY - this.lastIndexY) <= 1
+                                    || (Math.abs(this.gameNodes[i][j].nodeIndexY - this.lastIndexY) === 1
                                         && this.gameNodes[i][j].nodeIndexX == this.lastIndexX)
                                 ) {
                                     let playAnim = this.gameNodes[i][j].nodeGameNode.getComponent(cc.Animation);
@@ -262,9 +326,87 @@ cc.Class({
                             this.lastType = this.gameNodes[i][j].nodeType;
                         }
                     }
+                } else if (this.gameNodes[i][j].nodeType >= 0 && this.gameNodes[i][j].isSelected == true) {
+                    if (cc.pDistance(cc.v2(touchX, touchY), cc.v2(this.gameNodes[i][j].nodePositionX, this.gameNodes[i][j].nodePositionY)) < this.gameNodeWidth / 1.8) {
+                        if (this.lastType >= 0) {
+                            if (this.gameNodes[i][j].nodeType == this.lastType) {
+                                console.log("节点类型 this.gameNodes[i][j].nodeType = " + this.gameNodes[i][j].nodeType + ', this.lastType = ' + this.lastType);
+                                if ((Math.abs(this.gameNodes[i][j].nodeIndexX - this.lastIndexX) === 1
+                                    && this.gameNodes[i][j].nodeIndexY == this.lastIndexY)
+                                    || (Math.abs(this.gameNodes[i][j].nodeIndexY - this.lastIndexY) === 1
+                                        && this.gameNodes[i][j].nodeIndexX == this.lastIndexX)
+                                ) {
+                                    if (this.checkIsCicle(this.gameNodes[i][j])) {
+                                        this.canTouch = false;
+                                        this.touchEnd();
+                                    }
+                                    // let playAnim = this.gameNodes[i][j].nodeGameNode.getComponent(cc.Animation);
+                                    // playAnim.play('clicked');
+                                    // this.gameNodes[i][j].isSelected = true;
+                                    // this.selectedNodes.push(this.gameNodes[i][j]);
+                                    // this.lastIndexX = j;
+                                    // this.lastIndexY = i;
+                                    // this.lastPointX = this.gameNodes[i][j].nodePositionX;
+                                    // this.lastPointY = this.gameNodes[i][j].nodePositionY;
+                                    // this.lastType = this.gameNodes[i][j].nodeType;
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
+    },
+
+
+    /**
+     * 重新随机地图
+     */
+    reCreatMap() {
+        if (!ObjUtil.isEmpty(this.gameNodes)) {
+            for (let i = 0; i < this.columCount; ++i) {
+                for (let j = 0; j < this.rowCount; ++j) {
+                    let radomX = parseInt(Math.random() * this.rowCount);
+                    let radomY = parseInt(Math.random() * this.columCount);
+                    if (this.gameNodes[i][j].nodeType >= 0 && this.gameNodes[radomX][radomY].nodeType >= 0) {
+                        let tempNode = this.gameNodes[i][j].nodeGameNode;
+                        let tempType = this.gameNodes[i][j].nodeType;
+                        this.gameNodes[i][j].nodeGameNode = this.gameNodes[radomX][radomY].nodeGameNode;
+                        this.gameNodes[i][j].nodeType = this.gameNodes[radomX][radomY].nodeType;
+                        this.gameNodes[radomX][radomY].nodeGameNode = tempNode;
+                        this.gameNodes[radomX][radomY].nodeType = tempType;
+                    }
+                }
+            }
+            for (let i = 0; i < this.columCount; ++i) {
+                for (let j = 0; j < this.rowCount; ++j) {
+                    if (this.gameNodes[i][j].nodeType >= 0) {
+                        let action = cc.moveTo(0.4, this.gameNodes[i][j].nodePositionX, this.gameNodes[i][j].nodePositionY);
+                        this.gameNodes[i][j].nodeGameNode.runAction(action);
+                    }
+                }
+            }
+        }
+
+    },
+
+    touchEnd() {
+        if (!ObjUtil.isEmpty(this.selectedNodes) && this.selectedNodes.length >= 2) {
+            for (let i = 0; i < this.selectedNodes.length; ++i) {
+                this.reputNode(this.selectedNodes[i]);
+            }
+        } else if (!ObjUtil.isEmpty(this.selectedNodes) && this.selectedNodes.length > 0) {
+            for (let i = 0; i < this.selectedNodes.length; ++i) {
+                this.selectedNodes[i].isSelected = false;
+            }
+        }
+        this.selectedNodes = [];
+        this.lastindexX = -1;
+        this.lastIndexY = -1;
+        this.lastPointX = -1;
+        this.lastPointY = -1;
+        this.lastType = -1;
+        this.moveNode();
     },
 
     onTouchEvent() {
@@ -279,29 +421,21 @@ cc.Class({
             // console.log(cc.Event.EventTouch.getLocationX() + ' + 滑动事件滑动了 + ' + ObjUtil.isEmpty(event));
             // var nodeLocation = this.node.convertTouchToNodeSpace(event);
             // console.log('touch nodeLocation:' + JSON.stringify(nodeLocation));
+            if (this.canTouch === false) {
+                return;
+            }
             this.nodeTouched(event);
         }, this);
         this.node.on(cc.Node.EventType.TOUCH_END, function (event) {
             // console.log(cc.Event.EventTouch.getLocationX() + ' + 滑动事件滑动了 + ' + ObjUtil.isEmpty(event));
             // var nodeLocation = this.node.convertTouchToNodeSpace(event);
             // console.log('touch nodeLocation:' + JSON.stringify(nodeLocation));
-            if (!ObjUtil.isEmpty(this.selectedNodes) && this.selectedNodes.length >= 2) {
-                for (let i = 0; i < this.selectedNodes.length; ++i) {
-                    this.reputNode(this.selectedNodes[i]);
-                }
-            } else if (!ObjUtil.isEmpty(this.selectedNodes) && this.selectedNodes.length > 0) {
-                for (let i = 0; i < this.selectedNodes.length; ++i) {
-                    this.selectedNodes[i].isSelected = false;
-                }
-            }
-            this.selectedNodes = [];
-            this.lastindexX = -1;
-            this.lastIndexY = -1;
-            this.lastPointX = -1;
-            this.lastPointY = -1;
-            this.lastType = -1;
-            this.moveNode();
-
+            this.canTouch = true;
+            this.touchEnd();
+        }, this);
+        this.node.on(cc.Node.EventType.TOUCH_CANCEL, (event) => {
+            this.canTouch = true;
+            this.touchEnd();
         }, this);
     },
     start() {
